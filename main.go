@@ -18,10 +18,12 @@ var response Response
 
 // Display error if link too deep
 func MissingLengthCall(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	json.NewEncoder(w).Encode(Response{Code: "1", Message: "Please use append the number of digits you want returned (e.g. <url>/api/3"})
 }
 
 func FibonacciToDigits(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	params := mux.Vars(r)
 	strDigits := params["digits"]
 	digits, err := strconv.Atoi(strDigits)
@@ -52,6 +54,10 @@ func FibonacciLoop(n int) []int {
 	// Would get an extra zero on the end...
 	f = f[:len(f)-1]
 	return f
+}
+
+func enableCors(w *http.ResponseWriter) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
 }
 
 // main function to boot up everything
