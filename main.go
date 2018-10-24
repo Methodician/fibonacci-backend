@@ -27,6 +27,13 @@ func FibonacciToDigits(w http.ResponseWriter, r *http.Request) {
 	digits, err := strconv.Atoi(strDigits)
 	if err != nil {
 		json.NewEncoder(w).Encode(err)
+	} else if digits == 0 {
+		res := Response{Code: "1", Message: "There's no such thing as calculating to zero digits"}
+		json.NewEncoder(w).Encode(res)
+
+	} else if digits > 60000 {
+		res := Response{Code: "2", Message: "It could take a long time to calculate to that number of digits. Try a smaller number."}
+		json.NewEncoder(w).Encode(res)
 	} else {
 		json.NewEncoder(w).Encode(FibonacciLoop(digits))
 	}
@@ -39,9 +46,11 @@ func FibonacciLoop(n int) []int {
 	}
 	f[0] = 0
 	f[1] = 1
-	for i := 2; i <= n; i++ {
+	for i := 2; i < n; i++ {
 		f[i] = f[i-1] + f[i-2]
 	}
+	// Would get an extra zero on the end...
+	f = f[:len(f)-1]
 	return f
 }
 
