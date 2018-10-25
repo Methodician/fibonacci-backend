@@ -28,13 +28,13 @@ func FibonacciToDigits(w http.ResponseWriter, r *http.Request) {
 	strDigits := params["digits"]
 	digits, err := strconv.Atoi(strDigits)
 	if err != nil {
-		json.NewEncoder(w).Encode(err)
-	} else if digits == 0 {
-		res := Response{Code: "1", Message: "There's no such thing as calculating to zero digits"}
+		res := Response{Code: "1", Message: "We really need a number. Letters don't count no matter what."}
 		json.NewEncoder(w).Encode(res)
-
-	} else if digits > 60000 {
-		res := Response{Code: "2", Message: "It could take a long time to calculate to that number of digits. Try a smaller number."}
+	} else if digits <= 0 {
+		res := Response{Code: "2", Message: "We can't calculate the sequence to fewer than one digit."}
+		json.NewEncoder(w).Encode(res)
+	} else if digits > 200000 {
+		res := Response{Code: "3", Message: "It could take a long time to calculate to that number of digits. Try a smaller number."}
 		json.NewEncoder(w).Encode(res)
 	} else {
 		json.NewEncoder(w).Encode(FibonacciLoop(digits))
